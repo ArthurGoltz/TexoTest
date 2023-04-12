@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using TexoTest.Service;
 using TexoTest.Repository;
 using LightInject;
+using TexoTest.Models;
+using System;
+
 namespace TexoTest
 {
     public class Startup
@@ -47,6 +50,16 @@ namespace TexoTest
             app.UseAuthorization();
             app.UseSwagger();
 
+            var moviesData = ReadCSV();
+
+
+            using var scope = app.ApplicationServices.CreateScope();
+            IMovieRepository context = scope.ServiceProvider.GetRequiredService<IMovieRepository>();
+
+            //var context = app.ApplicationServices.GetService<IMovieRepository>();
+            //var context = 
+            SaveMovieDataAsync(moviesData, context);
+
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
@@ -60,6 +73,21 @@ namespace TexoTest
             {
                 endpoints.MapControllers();
             });
+        }
+
+        public static List<MoviesData> ReadCSV()
+        {
+            using (Stream file = System.IO.File.OpenRead(@"data.csv"))
+            {
+                var csvService = new CSVService();
+                return csvService.ReadCSV<MoviesData>(file).ToList();
+
+            }
+        }
+
+        public static void SaveMovieDataAsync(List<MoviesData> moviesData, IMovieRepository context)
+        {
+            context.AddMovieList(moviesData);
         }
     }
 }

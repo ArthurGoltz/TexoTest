@@ -17,33 +17,33 @@ namespace TexoTestTests
         {
             _movieRepository = new Mock<IMovieRepository>();
             _csvService = new Mock<ICSVService>();
-            _moviesController = new MoviesController(_movieRepository.Object, _csvService.Object);
+            _moviesController = new MoviesController(_movieRepository.Object);
         }
 
 
 
-        [Fact]
-        public async Task TestFileUploadMovieControllerAsync()
-        {
-            //arrange
-            var fileMock = new Mock<IFormFileCollection>();
-            using (var ms = new MemoryStream())
-            {
-                using (var writer = new StreamWriter("dummy.txt"))
-                {
-                    writer.WriteLine("dummy text");
-                    writer.Flush();
-                    ms.Position = 0;
-                    fileMock.Setup(m => m[0].OpenReadStream()).Returns(ms);
-                }
-            }
+        //[Fact]
+        //public async Task TestFileUploadMovieControllerAsync()
+        //{
+        //    //arrange
+        //    var fileMock = new Mock<IFormFileCollection>();
+        //    using (var ms = new MemoryStream())
+        //    {
+        //        using (var writer = new StreamWriter("dummy.txt"))
+        //        {
+        //            writer.WriteLine("dummy text");
+        //            writer.Flush();
+        //            ms.Position = 0;
+        //            fileMock.Setup(m => m[0].OpenReadStream()).Returns(ms);
+        //        }
+        //    }
 
-            //act
-            var response = await _moviesController.FileUpload(fileMock.Object);
-            var okResult = response as OkObjectResult;
+        //    //act
+        //    var response = await _moviesController.FileUpload(fileMock.Object);
+        //    var okResult = response as OkObjectResult;
 
-            //assert
-            Assert.Equal(200, okResult.StatusCode);
-        }
+        //    //assert
+        //    Assert.Equal(200, okResult.StatusCode);
+        //}
     }
 }
